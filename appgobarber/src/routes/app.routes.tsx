@@ -6,7 +6,6 @@ import Profile from '../pages/Profile';
 import CreateAppointment from '../pages/CreateAppointment';
 import AppointmentCreated from '../pages/AppointmentCreated';
 
-
 const App = createStackNavigator();
 
 const AppRoutes: React.FC = () => (
