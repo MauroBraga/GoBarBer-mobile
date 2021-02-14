@@ -4,11 +4,21 @@ import styled from 'styled-components/native';
 import {FlatList} from 'react-native';
 import { Provider } from './index';
 
+
 interface ProviderContainerProps {
   selected: boolean;
 }
 
 interface ProviderNameProps {
+  selected: boolean;
+}
+
+interface HourProps {
+  available: boolean;
+  selected: boolean;
+}
+
+interface HourTextProps {
   selected: boolean;
 }
 
@@ -93,4 +103,44 @@ export const OpenDatePickerButtonText = styled.Text`
   font-family: 'RobotoSlab-Medium';
   font-size:16px;
   color: #232129;
+`;
+
+
+export const Schedule = styled.View`
+  padding: 24px 0 16px;
+`;
+
+export const Section = styled.View`
+  margin-bottom: 24px;
+`;
+
+export const SectionTitle = styled.Text`
+  font-size: 18px;
+  color: #999591;
+  font-family: 'RobotoSlab-Regular';
+  margin: 0 24px 12px;
+`;
+
+export const SectionContent = styled.ScrollView.attrs({
+  horizontal: true,
+  showsHorizontalScrollIndicator: false,
+  contentContainerStyle: {
+    paddingHorizontal: 24,
+  },
+})``;
+
+export const Hour = styled(RectButton).attrs((props: HourProps) => ({
+  enabled: props.available,
+}))<HourProps>`
+  padding: 12px;
+  background: ${(props) => (props.selected ? '#FF9000' : '#3e3b47')};
+  border-radius: 10px;
+  margin-right: 8px;
+  opacity: ${(props) => (props.available ? 1 : 0.3)};
+`;
+
+export const HourText = styled.Text<HourTextProps>`
+  color: ${(props) => (props.selected ? '#232129' : '#f4ede8')};
+  font-family: 'RobotoSlab-Regular';
+  font-size: 18px;
 `;
