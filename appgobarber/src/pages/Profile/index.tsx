@@ -17,6 +17,7 @@ import { useAuth } from '../../hooks/auth';
 import api from '../../services/api';
 
 import getValidationErrors from '../../utils/getValidationErrors';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -26,11 +27,13 @@ import { Container, Title, UserAvatarButton ,UserAvatar, BackButton} from './sty
 interface ProfileFormData {
   name: string;
   email: string;
+  old_password: string;
   password: string;
+  password_confirmation: string;
 }
 
 const Profile: React.FC = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
 
@@ -67,12 +70,29 @@ const Profile: React.FC = () => {
         abortEarly: false,
       });
 
-      console.log(data);
+      const {
+        name,
+        email,
+        old_password,
+        password,
+        password_confirmation,
+      } = data;
 
-      Alert.alert(
-        'Perfil atualizado com sucesso!',
-        'As informações do perfil foram atualizadas.',
-      );
+      const formData = {
+        name,
+        email,
+        ...(old_password
+          ? {
+              old_password,
+              password,
+              password_confirmation,
+            }
+          : {}),
+      };
+
+      const response = await api.put('/profile', formData);
+      updateUser(response.data)
+      Alert.alert('Perfil atualizado com sucesso!');
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errors = getValidationErrors(err);
@@ -83,11 +103,20 @@ const Profile: React.FC = () => {
       }
 
       Alert.alert(
-        'Erro no cadastro',
-        'Ocorreu um erro ao fazer cadastro, tente novamente.',
+        'Erro na atualização do perfil',
+        'Ocorreu um erro ao fazer atualização do perfil, tente novamente.',
       );
     }
   }, []);
+
+  // const handleUpdateAvatar = useCallback(()=>{
+  //   launchImageLibrary.showImag({
+  //     title: 'Selecione um avatar',
+  //     cancel
+  //   }, response =>{
+
+  //   });
+  // },[]);
 
   const handleGoBack = useCallback(() => {
     navigation.goBack();
